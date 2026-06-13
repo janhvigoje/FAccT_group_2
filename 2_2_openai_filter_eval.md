@@ -128,37 +128,29 @@ ground truth span of the same label; each GT span matched at most once.
 ---
 
 
-**Finding 1 — Near-perfect recall on structured identifiers, catastrophic miss rate overall**
-For the 7 label categories the filter covers (EMAIL, TEL, PASS, DATE, STREET, GIVENNAME1,
-SOCIALNUMBER), recall is consistently above 0.96. EMAIL achieves recall of 1.0 and FNR of
-0.0 — every email in the sample is detected. However, 22 out of 29 ground truth categories
-have 0 TP. The overall FNR is 0.7245 — 72% of all PII entities in the sample are missed
-entirely.
+**Finding 1 — The filter covers 7 of 29 PII categories, producing a 72% overall miss rate**
 
-**Finding 2 — The filter covers 7 of 29 PII categories**
-DRIVERLICENSE (988 instances), PASSPORT (1019), USERNAME (1078), IP (938), IDCARD (1103),
-BOD (920), TIME (1539), TITLE (769), SEX (843), POSTCODE (715), CITY (723), COUNTRY (634),
-STATE (692), BUILDING (718), LASTNAME1/2/3 (1229 combined) — all completely undetected.
-These represent the majority of ground truth entities in the sample.
+The filter only detects EMAIL, TEL, PASS, DATE, STREET, GIVENNAME1, and SOCIALNUMBER. For these it achieves near-perfect recall (0.96–1.0). However 22 of 29 ground truth categories have 0 TP — DRIVERLICENSE, PASSPORT, USERNAME, IP, IDCARD, BOD, TIME, TITLE, SEX and others are entirely undetected. The result is an overall FNR of 0.7245: 72% of all PII entities in the sample are missed.
 
-**Finding 3 — Precision is low due to span splitting and label over-generalisation**
+
+**Finding 2 — Precision is low due to span splitting and label over-generalisation**
 The filter splits entity spans at subword boundaries, producing multiple predictions per
 ground truth span. This inflates FP counts: GIVENNAME1 has 6,877 FP, SOCIALNUMBER 7,303 FP,
 STREET 5,343 FP. The filter also over-generalises PRIVATE_ADDRESS to cover building numbers,
 postcodes, and city names — all labelled STREET, generating FP against BUILDING, CITY,
 STATE, POSTCODE ground truth.
 
-**Finding 4 — URL label is a complete mismatch**
+**Finding 3 — URL label is a complete mismatch**
 2,045 URL predictions, 0 TP. The model maps IP addresses to `private_url` but the dataset
 labels them as IP. This is a pure label taxonomy mismatch with no resolution under the
 current mapping.
 
-**Finding 5 — Language performance is uniform**
+**Finding 4 — Language performance is uniform**
 No significant performance gap across the 6 languages. German is marginally worse (F1 0.19
 vs 0.21 average) but the difference is small. This is expected given the filter's failure
 mode is categorical coverage, not language-specific pattern recognition.
 
-**Finding 6 — Failure against our 1.4 threshold**
+**Finding 5 — Failure against our 1.4 threshold**
 Our pre-registered threshold for the healthcare LLM training setting was FNR < 0.1% for
 explicit PII. The filter achieves FNR of 0.7245 overall — failing by a factor of 700. Even
 for its best-covered category (EMAIL, FNR = 0.0), the precision of 0.47 means nearly half
