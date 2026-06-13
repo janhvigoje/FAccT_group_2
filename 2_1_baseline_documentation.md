@@ -69,6 +69,8 @@ The baseline is implemented in `baseline.py` and operates as follows:
 
 *Language performance is uniform* — no significant gap across the six languages, which is expected: regex patterns are language-agnostic and operate purely on character structure.
 
+*URL* defined in the regex pattern set but produced 0 predictions and 0 ground truth matches in the sample. The ai4privacy validation split does not appear to contain URL-labelled entities, or they appear under a different label. No performance can be reported for this category.
+
 **We also observed limitations such as:**
 
 - Regex cannot detect NAME, USERNAME, ADDRESS, SSN, PASSPORT, or any semantically-defined PII category — these account for a large share of ground truth labels and are entirely outside the baseline's scope
