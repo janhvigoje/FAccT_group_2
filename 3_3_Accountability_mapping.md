@@ -1,8 +1,8 @@
-## 3.3 Accountability Mapping
+# 3.3 Accountability Mapping
 
-To analyze the governance issues of the OpenAI Privacy Filter (OPF), we mapped its socio-technical ecosystem using standard accountability frameworks discussed in the course (Bovens, 2007; Novelli et al., 2024). The ecosystem consists of **Actors** (Model Provider [OpenAI], Tool Deployer/Data Controller, Downstream LLM User, and the Affected Person) and **Forums** (Data Protection Authorities [DPAs], Courts, Internal Review Boards, and the User Base acting as a social forum).
+To analyze the governance issues of the OpenAI Privacy Filter (OPF), we mapped its socio-technical ecosystem using standard accountability frameworks (Bovens, 2007; Novelli et al., 2024). The ecosystem consists of **Actors** (Model Provider [OpenAI], Tool Deployer/Data Controller, Downstream LLM User, and the Affected Person) and **Forums** (Data Protection Authorities [DPAs], Courts, Internal Review Boards, and the User Base acting as a social forum).
 
-However, mapping these entities reveals that accountability is easily lost across the AI supply chain. Grounded in our empirical findings from Sections 2.3 and 2.5, we identified three major accountability gaps:
+However, mapping these entities reveals that accountability is easily lost across the AI supply chain. Grounded in our empirical findings from Sections 2.2, 2.3 and 2.5, we identified three major accountability gaps:
 
 ### 1. The "Many Hands" Problem in the Algorithmic Supply Chain
 As Nissenbaum (1996) and Cobbe et al. (2023) point out, distributed software supply chains obscure who is responsible when harms occur. Our metrics in Section 2.3 show that the filter successfully detects only **7 out of 29 PII categories**, leaving **22 categories** with zero True Positives. This creates a massive Full False Negative Rate (FNR) of over 51%. 
