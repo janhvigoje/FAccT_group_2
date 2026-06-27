@@ -17,7 +17,7 @@ Some examples are:
 - Birth dates
 - Name labels
 
-If useers do not know about these limitations, theyy may think that all personal information has been removed even though some identifiers are still visible.
+If users do not know about these limitations, they may think that all personal information has been removed even though some identifiers are still visible.
 
 ## Training and Evaluation Data
 
@@ -45,7 +45,7 @@ In our evaluation, this happened for identifiers such as passport numbers, birth
 
 Over redaction happens when the model masks information that is not actually personal.
 
-For example, certificate IDs were sometimes classified as account or social security numbers. Zhis does not create a privacy risk, but it removes useful information from the document.
+For example, certificate IDs were sometimes classified as account or social security numbers. This does not create a privacy risk, but it removes useful information from the document.
 
 ## Subgroup Performance
 
