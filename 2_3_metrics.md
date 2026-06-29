@@ -153,18 +153,69 @@ To isolate technical capability from deployment risks, we present the results in
 ---
 
 ## Key Findings and Audit Reflections
+## Finding 1 — Strong in-scope capability, but ~50% performance collapse under full coverage
 
-**Finding 1 — High Recall In-Scope, Systematic Taxonomy Gap Overall**
-Within its targeted 9 canonical categories (In-Scope mode), the OpenAI Privacy Filter demonstrates strong contextual sensitivity. It achieves near-perfect Recall on categories like `EMAIL` (Recall: 1.0) and `SOCIALNUMBER` (Recall: 0.9979), with an overall in-scope Recall of ~83%. However, when evaluated against all 21 target categories (Full Evaluation mode), the Recall collapses to roughly ~48% across all languages and domains. This empirical drop highlights that the filter's primary limitation is not detection capability, but rather taxonomic narrowness, leaving 12 out-of-scope categories entirely unmasked (FNR: 1.0000).
+In in-scope evaluation, the model achieves high recall across supported categories (avg ≈ 0.83), with near-perfect performance on EMAIL (1.0), SOCIALNUMBER (0.9979), and IDCARD (0.9529–1.0 range).
 
-**Finding 2 — Over-Redaction Mismatch and Token-Splitting Issues**
-Even for in-scope categories, precision remains low due to systematic token-splitting issues at subword boundaries and broad label over-generalisation. For instance, the filter achieved a precision of only 0.3702 on `DATE` and 0.4457 on `PERSON`, meaning more than half of the predicted dates and names are false alarms. This triggers a high rate of over-redaction, stripping out generic, non-sensitive content and compromising the semantic integrity of downstream training data.
+However, in full evaluation, recall drops to ~0.49–0.51 across all settings, reflecting a systematic loss of ~41.5% of ground truth spans due to unsupported label categories.
 
-**Finding 3 — Length Window Attention Decay**
-Our document length breakdown indicates a clear trend of performance degradation as text length scales. For long-form inputs, the in-scope FNR increases from 16.10% (Short) to 17.59% (Long). This demonstrates that longer contextual environments dilute transformer attention activations, making the filter more likely to overlook supported sensitive entity boundaries in long-context documents.
+Conclusion: the model performs well only within a limited operational label space, but overall effectiveness halves when realistic PII coverage is considered.
 
-**Finding 4 — The Taxonomy Alignment Paradox (Finance vs. Legal)**
-A comparative analysis between In-Scope and Full evaluation modes reveals a striking inversion in domain performance. **Finance** exhibits the highest In-Scope leakage (FNR: 18.42% for Long texts) but the lowest Full-mode leakage (FNR: 49.18%). Conversely, **Legal Services** maintains a moderate In-Scope leakage (FNR: 14.61%) but suffers the highest penalty in Full-mode (FNR: 54.85%). This paradox exposes the filter's narrowness: Financial texts align with the model's supported structured categories (minimizing the Full-mode penalty), yet their dense numerical nature confuses the local classifier. Legal texts allow easy extraction of names (good In-scope FNR) but are heavily saturated with unsupported quasi-identifiers, leading to catastrophic leakage in real-world Full evaluations.
+---
 
-**Finding 5 — Failure Against Safety Thresholds in High-Risk Settings**
-In Section 1.4, we established a strict safety-driven threshold for preparing training data in healthcare contexts (FNR < 0.1% for explicit PII and FNR < 5% for quasi-identifiers). Our intersectional breakdown under "Healthcare (Long)" reveals an In-Scope FNR of 20.10% and a Full FNR of 52.15%. In clinical scenarios, where patients write long narrative descriptions, the filter falls short of safety requirements by several orders of magnitude, confirming the severe risk of false reassurance when deploying standard generalist filters.
+## Finding 2 — Structural coverage gap dominates failure mode (not model accuracy)
+
+The model supports 9 of 21 observed PII categories (42.9%), leaving 12 categories entirely undetected (0 TP across all samples), including:
+
+- USERNAME (1,078)
+- PASSPORT (1,019)
+- DRIVERLICENSE (988)
+- BOD (920)
+- TIME (1,539)
+- TITLE (769)
+
+These unsupported categories account for a major portion of dataset PII and contribute directly to 8,354 FN spans in full evaluation.
+
+Conclusion: the primary limitation is not detection quality, but missing label space coverage.
+
+---
+
+## Finding 3 — Precision instability concentrated in semantically ambiguous labels
+
+While structured identifiers remain highly precise (EMAIL 0.9472, SOCIALNUMBER 1.0000, TEL 0.9046), ambiguous categories show major degradation:
+
+- DATE precision = 0.3702 (very high FP: 1169)
+- PERSON precision = 0.4457 (2193 FP)
+- ADDRESS precision = 0.6355 (1540 FN, 1111 FP trade-off)
+
+Conclusion: errors are concentrated in semantically open-ended categories, where boundary definition and context interpretation are required.
+
+---
+
+## Finding 4 — Model is highly robust to language variation (minimal variance)
+
+Across six languages, in-scope F1 ranges only from:
+
+- 0.6687 (German)
+- 0.7015 (Italian)
+- Δ ≈ 0.033
+
+Full evaluation also shows near-identical degradation patterns across languages (F1 ≈ 0.50–0.55 range).
+
+Conclusion: language is not a meaningful factor in performance variation; failures are label-structure driven rather than linguistic.
+
+---
+
+## Finding 5 — Domain and length effects are weak compared to label effects
+
+Across domains, in-scope F1 varies moderately:
+- Finance highest: 0.7208
+- Legal lowest: 0.6515
+
+Across text length:
+- Short F1 = 0.6930
+- Long F1 = 0.6821
+
+Intersectional results show differences remain within ~0.05–0.08 range.
+
+Conclusion: domain and length introduce only marginal variance compared to dominant label-coverage effects.
