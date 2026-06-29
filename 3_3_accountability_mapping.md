@@ -1,5 +1,6 @@
 # 3.3 Accountability Mapping
 
+
 To analyze the governance failures of the OpenAI Privacy Filter (OPF), we map its ecosystem by identifying the **"Actors"** (entities responsible for taking action and justifying it) and the **"Forums"** (entities that evaluate actions and impose consequences). 
 
 ### Part 1: Mapping Actors and Forums
@@ -22,9 +23,9 @@ The corresponding **Forums** intended to hold these actors accountable are:
 Mapping these entities against our empirical findings from Part 2 reveals severe accountability gaps. The safety net is fundamentally broken due to transparency failures and false reassurance:
 
 **1. The Liability Void (Model Provider vs. Tool Deployer)**
-Our metrics in Section 2.3 demonstrate that the filter successfully targets only 7 out of 29 PII categories, leaving 22 categories entirely unmasked (0 True Positives). This results in a catastrophic overall False Negative Rate (FNR) of 72.45%. 
+Our metrics in Section 2.3 demonstrate that the filter successfully targets only **9 out of 21** canonical PII categories, leaving **12 categories entirely unmasked** (0 True Positives). This results in a catastrophic overall Full False Negative Rate (FNR) of **51.37%**. 
 
-However, as documented in Section 2.2, the Model Provider failed to transparently disclose these 22 taxonomic blind spots. Consequently, the Tool Deployer blindly integrates the filter, falsely assuming it provides comprehensive protection. When downstream LLMs leak unredacted data (like dates of birth or passports), the Provider uses its model card to disclaim safety guarantees, while the Deployer blames the "black-box AI." This creates a liability gap where no actor takes responsibility for the 72.45% of PII that structurally leaks.
+However, as documented in Section 2.2, the Model Provider failed to transparently disclose these 12 taxonomic blind spots. Consequently, the Tool Deployer blindly integrates the filter, falsely assuming it provides comprehensive protection. When downstream LLMs leak unredacted data (like dates of birth or passports), the Provider uses its model card to disclaim safety guarantees, while the Deployer blames the "black-box AI." This creates a liability gap where no actor takes responsibility for the 51.37% of PII that structurally leaks.
 
 **2. Performative Oversight (Internal Review Bodies vs. Tool Deployer)**
 Internal Review Bodies are supposed to prevent unsafe deployments. However, our downstream black-box check (Section 2.5) exposes why this internal oversight fails. We identified instances of "truncated masking" (e.g., masking a driver's license as `[SOCIALNUMBER]892` in Example 2). 

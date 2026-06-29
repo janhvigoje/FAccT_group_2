@@ -1,67 +1,59 @@
 # 2.3 Metrics
 
-To evaluate the operational safety and taxonomic generalization of the OpenAI Privacy Filter (OPF), we performed a multi-dimensional metrics breakdown. We utilized a stratified validation subset of exactly 3,000 samples (500 per language: Dutch, English, French, German, Italian, Spanish; seed 42) from the `pii-masking-300k` dataset.
 
-Following the methodology established in Section 2.2, we evaluate the OpenAI Privacy Filter under two distinct modalities:
-* **In-Scope Evaluation**: Measures performance strictly on the 10 canonical categories targeted by the model's design scope.
-* **Full Evaluation**: Scores the model against all 29 observed PII categories in the dataset, penalising taxonomic gaps as False Negatives (FN) to reflect real-world pipeline leakage risk.
+Following the corrected dual-mode evaluation methodology established by our team in Section 2.2, we report the multidimensional metrics breakdown for the OpenAI Privacy Filter (OPF). As detailed in 2.2, the raw dataset labels were collapsed into **21 canonical categories** to eliminate taxonomy fragmentation. 
 
----
+To isolate technical capability from deployment risks, we present the results in two modalities:
+* **In-Scope Evaluation**: Assesses the model strictly on the 9 observed PII categories it successfully detects, plus one broken mapping (`ACCOUNTNUMBER`).
+* **Full Evaluation**: Scores the model against all 21 observed canonical categories, penalizing the **12 unsupported labels** (marked with `*`) as False Negatives (FN) to reflect real-world pipeline leakage risk.
 
-## 1. PII Category Breakdown
+### (i) PII Category Breakdown
 
-### In-Scope Mode Category Breakdown:
+**In-Scope Mode Category Breakdown:**
+
 | Category | TP | FP | FN | Precision | Recall | F1 | FNR | FPR |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **EMAIL** | 1040 | 1150 | 0 | 0.4749 | 1.0000 | 0.6440 | 0.0000 | 0.5251 |
-| **TEL** | 825 | 962 | 3 | 0.4617 | 0.9964 | 0.6310 | 0.0036 | 0.5383 |
-| **PASS** | 623 | 697 | 14 | 0.4720 | 0.9780 | 0.6367 | 0.0220 | 0.5280 |
-| **DATE** | 687 | 3014 | 17 | 0.1856 | 0.9759 | 0.3119 | 0.0241 | 0.8144 |
-| **STREET** | 690 | 5343 | 23 | 0.1144 | 0.9677 | 0.2046 | 0.0323 | 0.8856 |
-| **GIVENNAME1** | 737 | 6877 | 27 | 0.0968 | 0.9647 | 0.1759 | 0.0353 | 0.9032 |
-| **SOCIALNUMBER** | 944 | 7303 | 2 | 0.1145 | 0.9979 | 0.2054 | 0.0021 | 0.8855 |
-| **URL** | 0 | 2045 | 0 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 1.0000 |
+| **EMAIL** | 1040 | 58 | 0 | 0.9472 | 1.0000 | 0.9729 | 0.0000 | 0.0528 |
+| **SOCIALNUMBER** | 944 | 0 | 2 | 1.0000 | 0.9979 | 0.9989 | 0.0021 | 0.0000 |
+| **IDCARD** | 1051 | 0 | 52 | 1.0000 | 0.9529 | 0.9759 | 0.0471 | 0.0000 |
+| **IP** | 921 | 118 | 17 | 0.8864 | 0.9819 | 0.9317 | 0.0181 | 0.1136 |
+| **TEL** | 825 | 87 | 3 | 0.9046 | 0.9964 | 0.9483 | 0.0036 | 0.0954 |
+| **PASS** | 621 | 53 | 16 | 0.9214 | 0.9749 | 0.9474 | 0.0251 | 0.0786 |
+| **DATE** | 687 | 1169 | 17 | 0.3702 | 0.9759 | 0.5367 | 0.0241 | 0.6298 |
+| **PERSON** | 1763 | 2193 | 339 | 0.4457 | 0.8387 | 0.5820 | 0.1613 | 0.5543 |
+| **ADDRESS** | 1937 | 1111 | 1540 | 0.6355 | 0.5571 | 0.5937 | 0.4429 | 0.3645 |
+| **ACCOUNTNUMBER** | 0 | 2127 | 0 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 1.0000 |
 
-### Full Mode Category Breakdown (Includes Out-of-Scope Categories):
+**Full Mode Category Breakdown:**
+
 | Category | TP | FP | FN | Precision | Recall | F1 | FNR | FPR |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **EMAIL** | 1040 | 1150 | 0 | 0.4749 | 1.0000 | 0.6440 | 0.0000 | 0.5251 |
-| **TEL** | 825 | 962 | 3 | 0.4617 | 0.9964 | 0.6310 | 0.0036 | 0.5383 |
-| **PASS** | 623 | 697 | 14 | 0.4720 | 0.9780 | 0.6367 | 0.0220 | 0.5280 |
-| **DATE** | 687 | 3014 | 17 | 0.1856 | 0.9759 | 0.3119 | 0.0241 | 0.8144 |
-| **STREET** | 690 | 5343 | 23 | 0.1144 | 0.9677 | 0.2046 | 0.0323 | 0.8856 |
-| **GIVENNAME1** | 737 | 6877 | 27 | 0.0968 | 0.9647 | 0.1759 | 0.0353 | 0.9032 |
-| **SOCIALNUMBER** | 944 | 7303 | 2 | 0.1145 | 0.9979 | 0.2054 | 0.0021 | 0.8855 |
-| **URL** | 0 | 2045 | 0 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 1.0000 |
+| **EMAIL** | 1040 | 58 | 0 | 0.9472 | 1.0000 | 0.9729 | 0.0000 | 0.0528 |
+| **SOCIALNUMBER** | 944 | 0 | 2 | 1.0000 | 0.9979 | 0.9989 | 0.0021 | 0.0000 |
+| **IDCARD** | 1051 | 0 | 52 | 1.0000 | 0.9529 | 0.9759 | 0.0471 | 0.0000 |
+| **IP** | 921 | 118 | 17 | 0.8864 | 0.9819 | 0.9317 | 0.0181 | 0.1136 |
+| **TEL** | 825 | 87 | 3 | 0.9046 | 0.9964 | 0.9483 | 0.0036 | 0.0954 |
+| **PASS** | 621 | 53 | 16 | 0.9214 | 0.9749 | 0.9474 | 0.0251 | 0.0786 |
+| **DATE** | 687 | 1169 | 17 | 0.3702 | 0.9759 | 0.5367 | 0.0241 | 0.6298 |
+| **PERSON** | 1763 | 2193 | 339 | 0.4457 | 0.8387 | 0.5820 | 0.1613 | 0.5543 |
+| **ADDRESS** | 1937 | 1111 | 1540 | 0.6355 | 0.5571 | 0.5937 | 0.4429 | 0.3645 |
+| **ACCOUNTNUMBER** | 0 | 2127 | 0 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 1.0000 |
 | **BOD \*** | 0 | 0 | 920 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 |
 | **BUILDING \*** | 0 | 0 | 718 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 |
-| **CITY \*** | 0 | 0 | 723 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 |
-| **COUNTRY \*** | 0 | 0 | 634 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 |
 | **DRIVERLICENSE \*** | 0 | 0 | 988 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 |
 | **GEOCOORD \*** | 0 | 0 | 79 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 |
-| **GIVENNAME2 \*** | 0 | 0 | 188 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 |
-| **IDCARD \*** | 0 | 0 | 1103 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 |
-| **IP \*** | 0 | 0 | 938 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 |
-| **LASTNAME1 \*** | 0 | 0 | 912 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 |
-| **LASTNAME2 \*** | 0 | 0 | 238 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 |
 | **LASTNAME3 \*** | 0 | 0 | 79 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 |
 | **PASSPORT \*** | 0 | 0 | 1019 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 |
-| **POSTCODE \*** | 0 | 0 | 715 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 |
 | **SECADDRESS \*** | 0 | 0 | 320 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 |
 | **SEX \*** | 0 | 0 | 843 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 |
-| **STATE \*** | 0 | 0 | 692 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 |
 | **TIME \*** | 0 | 0 | 1539 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 |
 | **TITLE \*** | 0 | 0 | 769 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 |
 | **USERNAME \*** | 0 | 0 | 1078 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 |
-| **CARDISSUER \*** | 0 | 0 | 1 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 |
 
-*(Note: Categories marked with an asterisk `*` are structurally out-of-scope for the OpenAI Filter.)*
+### (ii) Language Breakdown
 
----
+**In-Scope Evaluation Mode:**
 
-## 2. Language Breakdown
-
-### In-Scope Evaluation Mode:
 | Language | TP | FP | FN | Precision | Recall | F1 | FNR | FPR |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Dutch** | 1773 | 1246 | 388 | 0.5873 | 0.8205 | 0.6846 | 0.1795 | 0.4127 |
@@ -71,7 +63,8 @@ Following the methodology established in Section 2.2, we evaluate the OpenAI Pri
 | **Italian** | 1624 | 1064 | 318 | 0.6042 | 0.8363 | 0.7015 | 0.1637 | 0.3958 |
 | **Spanish** | 1587 | 1112 | 348 | 0.5880 | 0.8202 | 0.6849 | 0.1798 | 0.4120 |
 
-### Full Evaluation Mode:
+**Full Evaluation Mode:**
+
 | Language | TP | FP | FN | Precision | Recall | F1 | FNR | FPR |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Dutch** | 1773 | 1246 | 1913 | 0.5873 | 0.4810 | 0.5289 | 0.5190 | 0.4127 |
@@ -81,11 +74,10 @@ Following the methodology established in Section 2.2, we evaluate the OpenAI Pri
 | **Italian** | 1624 | 1064 | 1611 | 0.6042 | 0.5020 | 0.5484 | 0.4980 | 0.3958 |
 | **Spanish** | 1587 | 1112 | 1732 | 0.5880 | 0.4782 | 0.5274 | 0.5218 | 0.4120 |
 
----
+### (iii) Domain Breakdown
 
-## 3. Domain Breakdown
+**In-Scope Evaluation Mode:**
 
-### In-Scope Evaluation Mode:
 | Domain | TP | FP | FN | Precision | Recall | F1 | FNR | FPR |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Business** | 7038 | 4888 | 1490 | 0.5901 | 0.8253 | 0.6882 | 0.1747 | 0.4099 |
@@ -95,7 +87,8 @@ Following the methodology established in Section 2.2, we evaluate the OpenAI Pri
 | **Legal Services** | 615 | 531 | 127 | 0.5366 | 0.8288 | 0.6515 | 0.1712 | 0.4634 |
 | **Psychology** | 501 | 349 | 74 | 0.5894 | 0.8713 | 0.7032 | 0.1287 | 0.4106 |
 
-### Full Evaluation Mode:
+**Full Evaluation Mode:**
+
 | Domain | TP | FP | FN | Precision | Recall | F1 | FNR | FPR |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Business** | 7038 | 4888 | 7422 | 0.5901 | 0.4867 | 0.5335 | 0.5133 | 0.4099 |
@@ -105,27 +98,26 @@ Following the methodology established in Section 2.2, we evaluate the OpenAI Pri
 | **Legal Services** | 615 | 531 | 784 | 0.5366 | 0.4396 | 0.4833 | 0.5604 | 0.4634 |
 | **Psychology** | 501 | 349 | 529 | 0.5894 | 0.4864 | 0.5330 | 0.5136 | 0.4106 |
 
----
+### (iv) Text Length Breakdown
 
-## 4. Text Length Breakdown
+**In-Scope Evaluation Mode:**
 
-### In-Scope Evaluation Mode:
 | Length Group | TP | FP | FN | Precision | Recall | F1 | FNR | FPR |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Short (< 426 Chars)** | 4809 | 3337 | 923 | 0.5904 | 0.8390 | 0.6930 | 0.1610 | 0.4096 |
 | **Long (>= 426 Chars)** | 4980 | 3579 | 1063 | 0.5818 | 0.8241 | 0.6821 | 0.1759 | 0.4182 |
 
-### Full Evaluation Mode:
+**Full Evaluation Mode:**
+
 | Length Group | TP | FP | FN | Precision | Recall | F1 | FNR | FPR |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Short (< 426 Chars)** | 4809 | 3337 | 5008 | 0.5904 | 0.4899 | 0.5354 | 0.5101 | 0.4096 |
 | **Long (>= 426 Chars)** | 4980 | 3579 | 5331 | 0.5818 | 0.4830 | 0.5278 | 0.5170 | 0.4182 |
 
----
+### (v) Intersectional Breakdown: Domain x Length
 
-## 5. Intersectional Breakdown: Domain x Length
+**In-Scope Evaluation Mode:**
 
-### In-Scope Evaluation Mode:
 | Intersectional Group | TP | FP | FN | Precision | Recall | F1 | FNR | FPR |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Business (Short)** | 3552 | 2451 | 713 | 0.5917 | 0.8328 | 0.6919 | 0.1672 | 0.4083 |
@@ -141,7 +133,8 @@ Following the methodology established in Section 2.2, we evaluate the OpenAI Pri
 | **Psychology (Short)** | 209 | 135 | 25 | 0.6076 | 0.8932 | 0.7232 | 0.1068 | 0.3924 |
 | **Psychology (Long)** | 292 | 214 | 49 | 0.5771 | 0.8563 | 0.6895 | 0.1437 | 0.4229 |
 
-### Full Evaluation Mode:
+**Full Evaluation Mode:**
+
 | Intersectional Group | TP | FP | FN | Precision | Recall | F1 | FNR | FPR |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Business (Short)** | 3552 | 2451 | 3700 | 0.5917 | 0.4898 | 0.5359 | 0.5102 | 0.4083 |
@@ -159,19 +152,19 @@ Following the methodology established in Section 2.2, we evaluate the OpenAI Pri
 
 ---
 
-## 6. Key Findings
+## Key Findings and Audit Reflections
 
 **Finding 1 — High Recall In-Scope, Systematic Taxonomy Gap Overall**
-Within its targeted 10 canonical categories (In-Scope mode), the OpenAI Privacy Filter demonstrates strong contextual sensitivity. It achieves near-perfect Recall on categories like EMAIL (Recall: 1.0) and SOCIALNUMBER (Recall: 0.9979), with an overall in-scope Recall of ~83%. However, when evaluated against all 29 target categories (Full Evaluation mode), the Recall collapses to roughly ~48% across all languages and domains. This empirical drop highlights that the filter's primary limitation is not detection capability, but rather taxonomic narrowness, leaving out-of-scope categories entirely unmasked (FNR: 1.0000).
+Within its targeted 9 canonical categories (In-Scope mode), the OpenAI Privacy Filter demonstrates strong contextual sensitivity. It achieves near-perfect Recall on categories like `EMAIL` (Recall: 1.0) and `SOCIALNUMBER` (Recall: 0.9979), with an overall in-scope Recall of ~83%. However, when evaluated against all 21 target categories (Full Evaluation mode), the Recall collapses to roughly ~48% across all languages and domains. This empirical drop highlights that the filter's primary limitation is not detection capability, but rather taxonomic narrowness, leaving 12 out-of-scope categories entirely unmasked (FNR: 1.0000).
 
 **Finding 2 — Over-Redaction Mismatch and Token-Splitting Issues**
-Even for in-scope categories, precision remains low due to systematic token-splitting issues at subword boundaries and broad label over-generalisation. For instance, the filter achieved a precision of only 0.3702 on DATE and 0.4457 on PERSON, meaning more than half of the predicted dates and names are false alarms. This triggers a high rate of over-redaction, stripping out generic, non-sensitive content and compromising the semantic integrity of downstream training data.
+Even for in-scope categories, precision remains low due to systematic token-splitting issues at subword boundaries and broad label over-generalisation. For instance, the filter achieved a precision of only 0.3702 on `DATE` and 0.4457 on `PERSON`, meaning more than half of the predicted dates and names are false alarms. This triggers a high rate of over-redaction, stripping out generic, non-sensitive content and compromising the semantic integrity of downstream training data.
 
 **Finding 3 — Length Window Attention Decay**
-Our document length breakdown indicates a clear trend of performance degradation as text length scales. For long-form inputs, the in-scope FNR increases from 16.10% (Short) to 17.59% (Long), and Full FNR increases from 51.01% to 51.70%. This demonstrates that longer contextual environments dilute transformer attention activations, making the filter more likely to overlook supported sensitive entity boundaries in long-context documents.
+Our document length breakdown indicates a clear trend of performance degradation as text length scales. For long-form inputs, the in-scope FNR increases from 16.10% (Short) to 17.59% (Long). This demonstrates that longer contextual environments dilute transformer attention activations, making the filter more likely to overlook supported sensitive entity boundaries in long-context documents.
 
-**Finding 4 — Failure Against Safety Thresholds in High-Risk Settings**
-In Section 1.4, we established a strict safety-driven threshold for preparing training data in healthcare contexts (FNR < 0.1% for explicit PII and FNR < 5% for quasi-identifiers). Our intersectional breakdown under "Healthcare (Long)" reveals an In-Scope FNR of 20.10% and a Full FNR of 52.15%. In clinical scenarios, where patients write long narrative descriptions, the filter falls short of safety requirements by several orders of magnitude, confirming the risk of false reassurance when deploying standard generalist filters.
+**Finding 4 — The Taxonomy Alignment Paradox (Finance vs. Legal)**
+A comparative analysis between In-Scope and Full evaluation modes reveals a striking inversion in domain performance. **Finance** exhibits the highest In-Scope leakage (FNR: 18.42% for Long texts) but the lowest Full-mode leakage (FNR: 49.18%). Conversely, **Legal Services** maintains a moderate In-Scope leakage (FNR: 14.61%) but suffers the highest penalty in Full-mode (FNR: 54.85%). This paradox exposes the filter's narrowness: Financial texts align with the model's supported structured categories (minimizing the Full-mode penalty), yet their dense numerical nature confuses the local classifier. Legal texts allow easy extraction of names (good In-scope FNR) but are heavily saturated with unsupported quasi-identifiers, leading to catastrophic leakage in real-world Full evaluations.
 
----
-
+**Finding 5 — Failure Against Safety Thresholds in High-Risk Settings**
+In Section 1.4, we established a strict safety-driven threshold for preparing training data in healthcare contexts (FNR < 0.1% for explicit PII and FNR < 5% for quasi-identifiers). Our intersectional breakdown under "Healthcare (Long)" reveals an In-Scope FNR of 20.10% and a Full FNR of 52.15%. In clinical scenarios, where patients write long narrative descriptions, the filter falls short of safety requirements by several orders of magnitude, confirming the severe risk of false reassurance when deploying standard generalist filters.
